@@ -7,6 +7,9 @@ use App\Http\Requests\PostRequest;
 use App\Http\Requests\CategoryRequest;
 use App\Category;
 use App\Post;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DBActionDelete;
+use App\Mail\DBActionCreate;
 
 class MainController extends Controller
 {
@@ -35,6 +38,7 @@ class MainController extends Controller
     public function postDelete($id) {
         $post = Post::findOrFail($id);
         $post -> delete();
+        Mail::to('test@email.com') -> send(new DBActionDelete('Post', $post->title));
         return redirect() -> route('index');
     }
 
@@ -54,6 +58,7 @@ class MainController extends Controller
         $category = Category::findOrFail($id);
         $category -> posts() -> delete();
         $category -> delete();
+        Mail::to('test@email.com') -> send(new DBActionDelete('Category', $category->name));
         return redirect() -> route('index');
     }
 
@@ -68,6 +73,7 @@ class MainController extends Controller
         $category = category::findOrFail($id);
         $post -> category() -> associate($category);
         $post -> save();
+        Mail::to('test@email.com') -> send(new DBActionCreate('Post', $post->title));
         return redirect() -> route('index');
     }
 }

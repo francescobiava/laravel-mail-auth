@@ -1,0 +1,1 @@
+New {{ $type }} '{{ $name }}' created
